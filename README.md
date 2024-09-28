@@ -231,7 +231,7 @@ waymore      : ~/.config/waymore/config.yml
 
 
 ### Issues 📬  
-   Report issues [here](https://github.com/hackersthan/anveshan/issues).
+   If you encounter any errors please report them [here](https://github.com/hackersthan/anveshan/issues). I will try to fix it immediately.
 
   
 ### Disclaimer ❗️
