@@ -7,6 +7,7 @@ anveshan is the all in one script for your recon process, It helps to find subdo
 ### Features :fire:
    - Finding subdomains from each service using tools [subdominator, bbot, amass etc.]
    - Filter live subdomains and capture screenshots
+   - Finding open ports [naabu]
    - Finding URLs [waymore, getjs, xnlinkfinder, katana, paramspider]
    - Finding JS Files and scan them using nuclei and trufflehog
 
@@ -64,7 +65,7 @@ Enter target domain name [ex. target.com] :
 ```
 
 <h1 align="left">
-  <a href="https://github.com/hackersthan/anveshan"><img src="https://raw.githubusercontent.com/hackersthan/anveshan/refs/heads/main/img/flow.jpg" alt="flow" height=500px></a>
+  <a href="https://github.com/hackersthan/anveshan"><img src="https://raw.githubusercontent.com/hackersthan/anveshan/refs/heads/main/img/chart.jpg" alt="flow" height=500px></a>
   </h1>
   
 ---
@@ -73,9 +74,9 @@ Enter target domain name [ex. target.com] :
 
 |SUBDOMAINS  |URLS        |WORDLISTS             |SCANNERS  |
 |------------|------------|----------------------|----------|
-|subdominator|waymore     |six2dez.txt           |nuclei    |
-|amass       |getjs       |dnscan-top10k.txt     |trufflehog|
-|bbot        |xnlinkfinder|best-dns-wordlist.txt |          |
+|subdominator|waymore     |six2dez.txt           |naabu     |
+|amass       |getjs       |dnscan-top10k.txt     |nuclei    |
+|bbot        |xnlinkfinder|best-dns-wordlist.txt |trufflehog|
 |knock       |paramspider |trickest-resolvers.txt|          |
 |findomain   |katana      |                      |          |
 |assetfinder |            |                      |          |
@@ -221,6 +222,7 @@ waymore      : ~/.config/waymore/config.yml
   - [trickest-resolvers](https://github.com/trickest/resolvers)
   - [puredns](https://github.com/d3mondev/puredns)
   - [httpx](https://github.com/projectdiscovery/httpx)
+  - [naabu](https://github.com/projectdiscovery/naabu)
   - [waymore](https://github.com/xnl-h4ck3r/waymore)
   - [getjs](https://github.com/003random/getJS)
   - [xnlinkfinder](https://github.com/xnl-h4ck3r/xnLinkFinder)
