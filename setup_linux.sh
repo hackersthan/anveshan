@@ -170,6 +170,11 @@ nuclei -ut
 curl -sSfL https://raw.githubusercontent.com/trufflesecurity/trufflehog/main/scripts/install.sh | sudo sh -s -- -b /usr/local/bin
 
 
+#update go tools
+httpx -up
+nuclei -up
+katana -up
+
 
 #\\\\\\\\\\ wordlists /////////#
 scrclr
@@ -207,6 +212,7 @@ timeout 120 dnsvalidator -tL trickest-resolvers.txt -threads 25 -o resolvers.txt
 printf "${yellow}[$] we got $(cat resolvers.txt | wc -l) fresh resolvers${reset}\n" | pv -qL 23
 cd ../
 sleep 2
+
 
 
 #\\\\\\\\\ screen clear ///////#
