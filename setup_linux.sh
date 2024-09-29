@@ -57,7 +57,7 @@ read -p "${yellow}Do you want to upgrade all of them? (y/n): ${reset}" answer
 
 if [[ "$answer" == "y" || "$answer" == "Y" ]]; then
     printf "${green}[*] Upgrading all pip packages${reset}\n"
-    pip3 list --outdated | grep "[0-9\.[0-9]" | cut -d " " -f1 | xargs pip3 install --upgrade
+    pip3 list --outdated | grep "[0-9\.[0-9]" | cut -d " " -f1 | xargs pip3 install --upgrade --break-system-packages
 else
     printf "${red}[*] Not upgrading.${reset}\n"
 fi
@@ -87,14 +87,14 @@ printf "${magenta}[*] Installing tools ${reset}\n" | pv -qL 23
 sleep 2
 
 #basics
-pip3 install uro
-pip3 install pipx
-pip3 install urless
+pip3 install uro --break-system-packages
+pip3 install pipx --break-system-packages
+pip3 install urless --break-system-packages
 go install -v github.com/tomnomnom/anew@latest
 
 #subdomains
 pipx install bbot
-pip3 install git+https://github.com/guelfoweb/knock.git
+pip3 install git+https://github.com/guelfoweb/knock.git --break-system-packages
 go install github.com/tomnomnom/assetfinder@latest
 go install -v github.com/owasp-amass/amass/v4/...@master
 
@@ -107,7 +107,7 @@ sudo mv findomain /usr/bin/findomain
 #subdomainator
 git clone https://github.com/RevoltSecurities/Subdominator.git
 cd Subdominator
-pip3 install -r requirements.txt
+pip3 install -r requirements.txt --break-system-packages
 python3 setup.py install
 cd ../
 
@@ -121,7 +121,7 @@ cd ../
 #dnsvalidator
 git clone https://github.com/vortexau/dnsvalidator.git
 cd dnsvalidator
-pip3 install -r requirements.txt
+pip3 install -r requirements.txt --break-system-packages
 python3 setup.py install
 cd ../
 
@@ -145,8 +145,8 @@ sudo apt install ./google-chrome*.deb -y
 
 
 #urls
-pip install waymore
-pip install xnLinkFinder
+pip3 install waymore --break-system-packages
+pip3 install xnLinkFinder --break-system-packages
 go install github.com/003random/getJS/v2@latest
 go install github.com/hakluke/hakrawler@latest
 go install github.com/jaeles-project/gospider@latest
@@ -159,7 +159,7 @@ go install github.com/dwisiswant0/cf-check@latest
 #paramspider
 git clone https://github.com/0xKayala/ParamSpider.git
 cd ParamSpider
-pip3 install -r requirements.txt
+pip3 install -r requirements.txt --break-system-packages
 cd ../
 
 
@@ -200,9 +200,9 @@ rm dnscan-top10k.txt
 
 #\\ downloading amass config //#
 mkdir -p $HOME/.config/amass
-wget -O $HOME/.config/amass/datasources.yaml https://raw.githubusercontent.com/owasp-amass/amass/refs/heads/master/examples/datasources.yaml
-wget -O $HOME/.config/config.yaml https://raw.githubusercontent.com/owasp-amass/amass/refs/heads/master/examples/config.yaml
-wget -O $HOME/.config/waymore/config.yml https://raw.githubusercontent.com/xnl-h4ck3r/waymore/refs/heads/main/config.yml
+wget -O ~/anveshan/.config/amass/datasources.yaml https://raw.githubusercontent.com/owasp-amass/amass/refs/heads/master/examples/datasources.yaml
+wget -O ~/anveshan/.config/amass/config.yaml https://raw.githubusercontent.com/owasp-amass/amass/refs/heads/master/examples/config.yaml
+wget -O ~/anveshan/.config/waymore/config.yml https://raw.githubusercontent.com/xnl-h4ck3r/waymore/refs/heads/main/config.yml
 
 
 #\\\\\\ getting resolvers /////#
@@ -218,16 +218,16 @@ sleep 2
 #\\\\\\\\\ screen clear ///////#
 scrclr
 printf "${magenta}You need to add API Keys for [AMASS] [BBOT] [SUBDOMINATOR] in these config files${reset}\n"
-printf "${yellow}amass: $HOME/.config/amass/datasources.yaml${reset}\n"
-printf "${yellow}bbot: $HOME/.config/bbot/secrets.yml${reset}\n"
-printf "${yellow}subdominator: $HOME/.config/subdominator/provider-config.yaml${reset}\n"
+printf "${yellow}amass: ~/anveshan/.config/amass/config.yaml${reset}\n"
+printf "${yellow}bbot: ~/.config/bbot/secrets.yml${reset}\n"
+printf "${yellow}subdominator: ~/.config/Subdominator/provider-config.yaml${reset}\n"
 echo
 printf "${magenta}Also add VIRUSTOTAL and URLSCAN API Keys in waymore config file to get more urls.${reset}\n"
-printf "${yellow}waymore: $HOME/.config/waymore/config.yml${reset}\n"
+printf "${yellow}waymore: ~/anveshan/.config/waymore/config.yml${reset}\n"
 echo
 read -p "${red}You want to open these files in notepad? [y/n] ${reset} " apianswer
 if [[ "$apianswer" == [Yy] ]]; then
-        open $HOME/.config/amass/datasources.yaml $HOME/.config/bbot/secrets.yml $HOME/.config/Subdominator/provider-config.yaml $HOME/.config/waymore/config.yml
+        open ~/anveshan/.config/amass/config.yaml $HOME/.config/bbot/secrets.yml $HOME/.config/Subdominator/provider-config.yaml ~/anveshan/.config/waymore/config.yml
 else
         :
 fi
