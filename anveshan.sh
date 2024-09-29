@@ -90,8 +90,8 @@ echo
 
 #\\\\\\\\\\\\\\\ amass ///////////////#
 printf "${magenta}[+] running amass ...${reset}\n" | pv -qL 23
-amass enum -passive -d $domain -norecursive -nocolor -config ~/.config/amass/datasources.yaml -o amassP.txt
-amass enum -active -d $domain -nocolor -config ~/.config/amass/datasources.yaml -o amassA.txt
+amass enum -passive -d $domain -norecursive -nocolor -config ~/anveshan/.config/amass/datasources.yaml -o amassP.txt
+amass enum -active -d $domain -nocolor -config ~/anveshan/.config/amass/config.yaml -o amassA.txt
 cat amassP.txt amassA.txt | cut -d " " -f1 | grep "$domain" | anew amass.txt
 rm amassP.txt
 rm amassA.txt
@@ -206,7 +206,7 @@ printf "${magenta}[*] finding urls ${reset}\n" | pv -qL 23
 mkdir urls/ && cd urls/
 
 printf "${yellow} [+] waymore ${reset}\n" | pv -qL 23
-waymore -i $domain -mode U -n -oU waymore.txt
+waymore -i $domain -mode U -c ~/anveshan/.config/waymore/config.yml -oU waymore.txt
 
 printf "${yellow} [+] getJS ${reset}\n" | pv -qL 23
 getJS --input ../webdomains.txt --output getjs.txt --nocolors --complete
