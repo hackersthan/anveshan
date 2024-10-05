@@ -52,12 +52,13 @@ if ! command -v go &> /dev/null; then
 fi
 
 # function to upgrade pip packages
-echo -e "${magenta}You have %d outdated pip packages.${reset}" "$(pip3 list --outdated | grep '[0-9\.[0-9]' | wc -l)"
+echo -e "${magenta}You have %d outdated pip packages.${reset}" "$(pip3 list --outdated | grep \'[0-9\.[0-9]\' | wc -l)"
 read -p "${yellow}Do you want to upgrade all of them? (y/n): ${reset}" answer
 
 if [[ "$answer" == "y" || "$answer" == "Y" ]]; then
     printf "${green}[*] Upgrading all pip packages${reset}\n"
     pip3 list --outdated | grep "[0-9\.[0-9]" | cut -d " " -f1 | xargs pip3 install --upgrade --break-system-packages
+    pip3 list --outdated | grep "[0-9\.[0-9]" | cut -d " " -f1 | xargs pip3 install
 else
     printf "${red}[*] Not upgrading.${reset}\n"
 fi
@@ -87,13 +88,18 @@ printf "${magenta}[*] Installing tools ${reset}\n" | pv -qL 23
 sleep 2
 
 #basics
+pip3 install uro
 pip3 install uro --break-system-packages
+pip3 install pipx
 pip3 install pipx --break-system-packages
+pip3 install urless
 pip3 install urless --break-system-packages
 go install -v github.com/tomnomnom/anew@latest
 
 #subdomains
-pipx install bbot
+pip3 install bbot
+pip3 install bbot --break-system-packages
+pip3 install git+https://github.com/guelfoweb/knock.git
 pip3 install git+https://github.com/guelfoweb/knock.git --break-system-packages
 go install github.com/tomnomnom/assetfinder@latest
 go install -v github.com/owasp-amass/amass/v4/...@master
@@ -107,6 +113,7 @@ sudo mv findomain /usr/bin/findomain
 #subdomainator
 git clone https://github.com/RevoltSecurities/Subdominator.git
 cd Subdominator
+pip3 install -r requirements.txt
 pip3 install -r requirements.txt --break-system-packages
 python3 setup.py install
 cd ../
@@ -121,6 +128,7 @@ cd ../
 #dnsvalidator
 git clone https://github.com/vortexau/dnsvalidator.git
 cd dnsvalidator
+pip3 install -r requirements.txt
 pip3 install -r requirements.txt --break-system-packages
 python3 setup.py install
 cd ../
@@ -145,6 +153,8 @@ sudo apt install ./google-chrome*.deb -y
 
 
 #urls
+pip3 install waymore
+pip3 install xnLinkFinder
 pip3 install waymore --break-system-packages
 pip3 install xnLinkFinder --break-system-packages
 go install github.com/003random/getJS/v2@latest
@@ -159,6 +169,7 @@ go install github.com/dwisiswant0/cf-check@latest
 #paramspider
 git clone https://github.com/0xKayala/ParamSpider.git
 cd ParamSpider
+pip3 install -r requirements.txt
 pip3 install -r requirements.txt --break-system-packages
 cd ../
 
