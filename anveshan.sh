@@ -90,8 +90,8 @@ echo
 
 #\\\\\\\\\\\\\\\ amass ///////////////#
 printf "${magenta}[+] running amass ...${reset}\n" | pv -qL 23
-amass enum -passive -d $domain -norecursive -nocolor -config ~/anveshan/.config/amass/datasources.yaml -o amassP.txt
-amass enum -active -d $domain -nocolor -config ~/anveshan/.config/amass/config.yaml -o amassA.txt
+timeout 1200 amass enum -passive -d $domain -norecursive -nocolor -config ~/anveshan/.config/amass/datasources.yaml -o amassP.txt
+timeout 1200 amass enum -active -d $domain -nocolor -config ~/anveshan/.config/amass/datasources.yaml -o amassA.txt
 cat amassP.txt amassA.txt | cut -d " " -f1 | grep "$domain" | anew amass.txt
 rm amassP.txt
 rm amassA.txt
