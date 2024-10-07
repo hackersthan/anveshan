@@ -90,11 +90,9 @@ echo
 
 #\\\\\\\\\\\\\\\ amass ///////////////#
 printf "${magenta}[+] running amass ...${reset}\n" | pv -qL 23
-timeout 1200 amass enum -passive -d $domain -norecursive -nocolor -config ~/anveshan/.config/amass/datasources.yaml -o amassP.txt
-timeout 1200 amass enum -active -d $domain -nocolor -config ~/anveshan/.config/amass/datasources.yaml -o amassA.txt
-cat amassP.txt amassA.txt | cut -d " " -f1 | grep "$domain" | anew amass.txt
-rm amassP.txt
-rm amassA.txt
+timeout 1200 amass enum -passive -d $domain -norecursive -nocolor -config ~/anveshan/.config/amass/datasources.yaml -o amassP
+timeout 1200 amass enum -active -d $domain -nocolor -config ~/anveshan/.config/amass/datasources.yaml -o amassA
+cat amassP amassA | cut -d " " -f1 | grep "$domain" | anew amass.txt
 echo
 
 
@@ -152,6 +150,8 @@ echo "$domain" | anew subdomains.txt
 mkdir subs-source/
 mv subdominator.txt subs-source/
 mv amass.txt subs-source/
+mv amassA subs-source/
+mv amassP subs-source/
 mv knockpy subs-source/
 mv knockpy.txt subs-source/
 mv findomain.txt subs-source/
