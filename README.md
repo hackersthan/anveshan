@@ -16,13 +16,13 @@ anveshan is the all in one script for your recon process, It helps to find subdo
 ```bash
 git clone https://github.com/hackersthan/anveshan.git
 cd anveshan/
-sudo bash setup_linux.sh
+bash setup_linux.sh
 ```
 
 
 ### Input 🧑🏻‍💻
 ```
-~/$ bash anveshan.sh
+$HOME/$ bash anveshan.sh
        ,                                          
       ███▓▄,,▄▄▄▓█████▓▄▄,                        
       ██████████▀ `█████████▌_                   
@@ -42,7 +42,7 @@ Enter target domain name [ex. target.com] :
 
 ### Output :sound:
 ```bash
-~/target.com-recon > tree
+$HOME/target.com-recon > tree
 .
 ├── subs-source/
 ├── screenshots/
@@ -90,10 +90,10 @@ Enter target domain name [ex. target.com] :
 ## APIs :art:
 ### You need to setup API Keys for these tools
 ```
-amass        : ~/.config/amass/datasources.yaml
-bbot         : ~/.config/bbot/secrets.yml
-subdominator : ~/.config/Subdominator/provider-config.yaml
-waymore      : ~/.config/waymore/config.yml
+amass        : $HOME/.config/amass/datasources.yaml
+bbot         : $HOME/.config/bbot/secrets.yml
+subdominator : $HOME/.config/Subdominator/provider-config.yaml
+waymore      : $HOME/.config/waymore/config.yml
 ```
 
 ### DO NOT PUT API KEYS IN EVERY TOOL :pushpin:
