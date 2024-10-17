@@ -40,8 +40,7 @@ logo
 
 #* run with sudo
 if [ `whoami` != 'root' ];then
-    printf "${red}[!] YOU ARE NOT ROOT${reset}\n"
-    printf "${red}[!] Run with root OR manually enter password when asked.${reset}\n"
+    printf "${red}[!] Manually enter your password when asked.${reset}\n"
 fi
 
 # function to check golang installed or not
@@ -52,7 +51,7 @@ if ! command -v go &> /dev/null; then
 fi
 
 # function to upgrade pip packages
-echo -e "${magenta}You have %d outdated pip packages.${reset}" "$(pip3 list --outdated | grep \'[0-9\.[0-9]\' | wc -l)"
+echo -e "${magenta}You have $(pip3 list --outdated | grep '[0-9\.[0-9]' | wc -l) outdated pip packages.${reset}"
 read -p "${yellow}Do you want to upgrade all of them? (y/n): ${reset}" answer
 
 if [[ "$answer" == "y" || "$answer" == "Y" ]]; then
@@ -181,7 +180,7 @@ nuclei -ut
 curl -sSfL https://raw.githubusercontent.com/trufflesecurity/trufflehog/main/scripts/install.sh | sudo sh -s -- -b /usr/local/bin
 
 
-#update go tools
+#updating some golang tools
 httpx -up
 nuclei -up
 katana -up
@@ -211,9 +210,9 @@ rm dnscan-top10k.txt
 
 #\\ downloading amass config //#
 mkdir -p $HOME/.config/amass
-wget -O ~/anveshan/.config/amass/datasources.yaml https://raw.githubusercontent.com/owasp-amass/amass/refs/heads/master/examples/datasources.yaml
-wget -O ~/anveshan/.config/amass/config.yaml https://raw.githubusercontent.com/owasp-amass/amass/refs/heads/master/examples/config.yaml
-wget -O ~/anveshan/.config/waymore/config.yml https://raw.githubusercontent.com/xnl-h4ck3r/waymore/refs/heads/main/config.yml
+wget -O $HOME/anveshan/.config/amass/datasources.yaml https://raw.githubusercontent.com/owasp-amass/amass/refs/heads/master/examples/datasources.yaml
+wget -O $HOME/anveshan/.config/amass/config.yaml https://raw.githubusercontent.com/owasp-amass/amass/refs/heads/master/examples/config.yaml
+wget -O $HOME/anveshan/.config/waymore/config.yml https://raw.githubusercontent.com/xnl-h4ck3r/waymore/refs/heads/main/config.yml
 
 
 #\\\\\\ getting resolvers /////#
@@ -229,16 +228,16 @@ sleep 2
 #\\\\\\\\\ screen clear ///////#
 scrclr
 printf "${magenta}You need to add API Keys for [AMASS] [BBOT] [SUBDOMINATOR] in these config files${reset}\n"
-printf "${yellow}amass: ~/anveshan/.config/amass/config.yaml${reset}\n"
-printf "${yellow}bbot: ~/.config/bbot/secrets.yml${reset}\n"
-printf "${yellow}subdominator: ~/.config/Subdominator/provider-config.yaml${reset}\n"
+printf "${yellow}amass: $HOME/anveshan/.config/amass/config.yaml${reset}\n"
+printf "${yellow}bbot: $HOME/.config/bbot/secrets.yml${reset}\n"
+printf "${yellow}subdominator: $HOME/.config/Subdominator/provider-config.yaml${reset}\n"
 echo
 printf "${magenta}Also add VIRUSTOTAL and URLSCAN API Keys in waymore config file to get more urls.${reset}\n"
-printf "${yellow}waymore: ~/anveshan/.config/waymore/config.yml${reset}\n"
+printf "${yellow}waymore: $HOME/anveshan/.config/waymore/config.yml${reset}\n"
 echo
 read -p "${red}You want to open these files in notepad? [y/n] ${reset} " apianswer
 if [[ "$apianswer" == [Yy] ]]; then
-        open ~/anveshan/.config/amass/config.yaml $HOME/.config/bbot/secrets.yml $HOME/.config/Subdominator/provider-config.yaml ~/anveshan/.config/waymore/config.yml
+        open $HOME/anveshan/.config/amass/config.yaml $HOME/.config/bbot/secrets.yml $HOME/.config/Subdominator/provider-config.yaml $HOME/anveshan/.config/waymore/config.yml
 else
         :
 fi
