@@ -209,7 +209,8 @@ rm six2dez.txt
 rm dnscan-top10k.txt
 
 #\\ downloading amass config //#
-mkdir -p $HOME/.config/amass
+mkdir -p $HOME/anveshan/.config/amass
+mkdir -p $HOME/anveshan/.config/waymore
 wget -O $HOME/anveshan/.config/amass/datasources.yaml https://raw.githubusercontent.com/owasp-amass/amass/refs/heads/master/examples/datasources.yaml
 wget -O $HOME/anveshan/.config/amass/config.yaml https://raw.githubusercontent.com/owasp-amass/amass/refs/heads/master/examples/config.yaml
 wget -O $HOME/anveshan/.config/waymore/config.yml https://raw.githubusercontent.com/xnl-h4ck3r/waymore/refs/heads/main/config.yml
