@@ -90,8 +90,8 @@ echo
 
 #\\\\\\\\\\\\\\\ amass ///////////////#
 printf "${magenta}[+] running amass ...${reset}\n" | pv -qL 23
-timeout 1200 amass enum -passive -d $domain -norecursive -nocolor -config ~/anveshan/.config/amass/datasources.yaml -o amassP
-timeout 1200 amass enum -active -d $domain -nocolor -config ~/anveshan/.config/amass/datasources.yaml -o amassA
+timeout 1200 amass enum -passive -d $domain -norecursive -nocolor -config $HOME/anveshan/.config/amass/datasources.yaml -o amassP
+timeout 1200 amass enum -active -d $domain -nocolor -config $HOME/anveshan/.config/amass/datasources.yaml -o amassA
 cat amassP amassA | cut -d " " -f1 | grep "$domain" | anew amass.txt
 echo
 
@@ -130,7 +130,7 @@ echo
 
 #\\\\\\\\\\\\\\ combine //////////////#
 printf "${yellow}[*] combine all the result${reset}\n" | pv -qL 23
-sed "s/\x1B\[[0-9;]*[mK]//g" *.txt | sed 's/\*\.//g' | anew subdomains.txt
+sed "s/\x1B\[[0-9;]*[mK]//g" *.txt | sed 's/\*\.//g' | anew psubdomains.txt
 
 
 
@@ -141,8 +141,8 @@ puredns bruteforce "$wordlist" $domain -r ~/anveshan/wordlists/resolvers.txt -w 
 echo 
 
 printf "${yellow}[+] resolving subdomains${reset}\n" | pv -qL 23
-cat subdomains.txt bruteforce.txt | anew resolve.txt
-puredns resolve resolve.txt -r ~/anveshan/wordlists/resolvers.txt -w resolved.txt
+cat psubdomains.txt bruteforce.txt | anew lets-resolve.txt
+puredns resolve lets-resolve.txt -r ~/anveshan/wordlists/resolvers.txt -w resolved.txt
 cat resolved.txt | anew subdomains.txt
 echo "$domain" | anew subdomains.txt
 
@@ -159,7 +159,8 @@ mv assetfinder.txt subs-source
 mv bbot.txt subs-source/
 mv output/ subs-source/bbot-output/
 mv *output.txt subs-source/
-rm resolve.txt
+rm lets-resolve.txt
+rm resolved.txt
 rm bruteforce.txt
 
 
@@ -170,8 +171,8 @@ sleep 2 && echo
 
 #\\\\\\\\\\\\\\\ httpx ///////////////#
 printf "${magenta}[*] getting webdomains using httpx ${reset}\n" | pv -qL 23
-httpx -l subdomains.txt -p 80,443,7547,8089,8085,8443,8080,4567,8008,8000,8081,2087,1024,2083,2082,2086,8888,5985,9080,81,21,8880,5000,7170,3000,8082,9000,5001,3128,8090,8001,7777,9306,10443,9090,8800,10000,88,9999,4433,82,4443,9100,9443,8083,5555,5357,4444,49152,6443 -ss -pa -sc -fr -title -td -location -retries 3 -silent -nc -o httpx.txt
-cat httpx.txt | cut -d " " -f1 | sed -E 's/:(8080|8443|80|443)//g' | anew webdomains.txt
+httpx -l subdomains.txt -ss -pa -sc -fr -title -td -location -retries 3 -silent -nc -o httpx.txt
+cat httpx.txt | cut -d " " -f1 | anew webdomains.txt
 mv output/ screenshots/
 
 #\\\\\\\\\\\\\\\\ ips ////////////////#
@@ -188,10 +189,10 @@ sleep 3 && echo
 #\\\\\\\\\\\\ port scanning //////////#
 printf "${magenta}[+] port scanning using naabu : top 1000 ports ${reset}\n" | pv -qL 23
 naabu -list subdomains.txt -tp 1000 -rate 2000 -o naabu.txt
-cat ips.txt | cf-check | naabu -tp 1000 -rate 2000 -o naabu-ip.txt
+#cat ips.txt | cf-check | naabu -tp 1000 -rate 2000 -o naabu-ip.txt
 echo && echo
-printf "${yellow}[$] Found $(cat naabu.txt | wc -l) open ports on WEB${reset}\n" | pv -qL 23
-printf "${yellow}[$] Found $(cat naabu-ip.txt | wc -l) open ports on IPs${reset}\n" | pv -qL 23
+printf "${yellow}[$] Found $(cat naabu.txt | wc -l) open web_ports${reset}\n" | pv -qL 23
+#printf "${yellow}[$] Found $(cat naabu-ip.txt | wc -l) open ports on IPs${reset}\n" | pv -qL 23
 sleep 3
 
 
@@ -273,7 +274,7 @@ printf "${yellow} [$] Found %d subdomains${reset}\n" "$(cat subdomains.txt | wc 
 printf "${yellow} [$] Found %d webdomains${reset}\n" "$(cat webdomains.txt | wc -l)" | pv -qL 23
 echo
 printf "${red} [+] Ports${reset}\n" | pv -qL 23
-printf "${yellow} [$] Found %d open ports${reset}\n" "$(cat naabu.txt | wc -l)" | pv -qL 23
+printf "${yellow} [$] Found %d open web_ports${reset}\n" "$(cat naabu.txt | wc -l)" | pv -qL 23
 echo
 printf "${red} [+] URLs${reset}\n" | pv -qL 23
 printf "${yellow} [$] Found %d urls${reset}\n" "$(cat urls/urls.txt | wc -l)" | pv -qL 23
@@ -282,6 +283,6 @@ printf "${red} [+] Scanning${reset}\n" | pv -qL 23
 printf "${yellow} [$] Found %d nuclei secrets in %d js files${reset}\n" "$(cat js_nuclei.txt | wc -l)" "$(cat urls/jsfiles.txt | wc -l)" | pv -qL 23
 printf "${yellow} [$] Found %d trufflehog secrets in js files source code${reset}\n" "$(cat trufflehog-src.txt | grep -i "raw" | wc -l)" | pv -qL 23
 echo
-printf "${red} [+] Happy Hacking <3@sachin${reset}\n" | pv -qL 23
+printf "${red} [&] Happy Hacking ;D${reset}\n" | pv -qL 23
 
 # iti
