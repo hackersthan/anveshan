@@ -39,9 +39,11 @@ scrclr() {
 logo
 
 #* run with sudo
-if [ `whoami` != 'root' ];then
+if [ "$(whoami)" != 'root' ]; then
+
     printf "${red}[!] Manually enter your password when asked.${reset}\n"
 fi
+
 
 # function to check golang installed or not
 if ! command -v go &> /dev/null; then
@@ -50,17 +52,63 @@ if ! command -v go &> /dev/null; then
     sudo apt install golang-go
 fi
 
+
+#add GOPATH
+if [ -f ~/.bashrc ]; then
+    if ! grep -q "export GOPATH=" ~/.bashrc; then
+        echo "export GOPATH=\$HOME/go" >> ~/.bashrc
+        echo "export PATH=\$PATH:\$GOROOT/bin:\$GOPATH/bin" >> ~/.bashrc
+    fi
+    source ~/.bashrc
+elif [ -f ~/.zshrc ]; then
+    if ! grep -q "export GOPATH=" ~/.zshrc; then
+        echo "export GOPATH=\$HOME/go" >> ~/.zshrc
+        echo "export PATH=\$PATH:\$GOROOT/bin:\$GOPATH/bin" >> ~/.zshrc
+    fi
+    source ~/.zshrc
+else
+    echo "~/.bashrc or ~/.zshrc not found"
+fi
+
+
+
+# Check if --break-system-packages is required or not
+if pip3 install --help | grep -q -- '--break-system-packages'; then
+    bsp="--break-system-packages"
+else
+    bsp=""
+fi
+
+
+#Fix `urllib3` and `six` package errors
+read -p "removing 'urllib3' and 'six' packages from apt and installing from pip, Confirm? (Y/n): " confirm_uninstall
+if [[ "$confirm_uninstall" == "y" || "$confirm_uninstall" == "Y" ]]; then
+    echo "Uninstalling 'urllib3' and 'six' from apt..."
+    sudo apt remove -y python3-urllib3 python3-six
+
+    echo "Uninstalling 'urllib3' and 'six' from pip3..."
+    sudo pip3 uninstall -y urllib3 six $bsp
+
+    echo "Installing 'urllib3' and 'six' from pip3"
+    sudo pip3 install urllib3 six $bsp
+
+    echo "Packages uninstalled and reinstalled successfully."
+else
+    echo "Skipping uninstallation and installation of urllib3 and six."
+fi
+
+
 # function to upgrade pip packages
 echo -e "${magenta}You have $(pip3 list --outdated | grep '[0-9\.[0-9]' | wc -l) outdated pip packages.${reset}"
-read -p "${yellow}Do you want to upgrade all of them? (y/n): ${reset}" answer
+read -p "${yellow}Do you want to upgrade all of them? (Y/n): ${reset}" answer
 
 if [[ "$answer" == "y" || "$answer" == "Y" ]]; then
     printf "${green}[*] Upgrading all pip packages${reset}\n"
-    pip3 list --outdated | grep "[0-9\.[0-9]" | cut -d " " -f1 | xargs pip3 install --upgrade --break-system-packages
-    pip3 list --outdated | grep "[0-9\.[0-9]" | cut -d " " -f1 | xargs pip3 install
+    pip3 list --outdated | grep "[0-9\.[0-9]" | cut -d " " -f1 | xargs pip3 install --upgrade $bsp
 else
     printf "${red}[*] Not upgrading.${reset}\n"
 fi
+
 
 # installing basic tools
 scrclr
@@ -87,19 +135,14 @@ printf "${magenta}[*] Installing tools ${reset}\n" | pv -qL 23
 sleep 2
 
 #basics
-pip3 install uro
-pip3 install uro --break-system-packages
-pip3 install pipx
-pip3 install pipx --break-system-packages
-pip3 install urless
-pip3 install urless --break-system-packages
+pip3 install uro $bsp
+pip3 install pipx $bsp
+pip3 install urless $bsp
 go install -v github.com/tomnomnom/anew@latest
 
 #subdomains
-pip3 install bbot
-pip3 install bbot --break-system-packages
-pip3 install git+https://github.com/guelfoweb/knock.git
-pip3 install git+https://github.com/guelfoweb/knock.git --break-system-packages
+pip3 install bbot $bsp
+pip3 install git+https://github.com/guelfoweb/knock.git $bsp
 go install github.com/tomnomnom/assetfinder@latest
 go install -v github.com/owasp-amass/amass/v4/...@master
 
@@ -112,8 +155,7 @@ sudo mv findomain /usr/bin/findomain
 #subdomainator
 git clone https://github.com/RevoltSecurities/Subdominator.git
 cd Subdominator
-pip3 install -r requirements.txt
-pip3 install -r requirements.txt --break-system-packages
+pip3 install -r requirements.txt $bsp
 python3 setup.py install
 cd ../
 
@@ -127,8 +169,7 @@ cd ../
 #dnsvalidator
 git clone https://github.com/vortexau/dnsvalidator.git
 cd dnsvalidator
-pip3 install -r requirements.txt
-pip3 install -r requirements.txt --break-system-packages
+pip3 install -r requirements.txt $bsp
 python3 setup.py install
 cd ../
 
@@ -152,10 +193,8 @@ sudo apt install ./google-chrome*.deb -y
 
 
 #urls
-pip3 install waymore
-pip3 install xnLinkFinder
-pip3 install waymore --break-system-packages
-pip3 install xnLinkFinder --break-system-packages
+pip3 install waymore $bsp
+pip3 install xnLinkFinder $bsp
 go install github.com/003random/getJS/v2@latest
 go install github.com/hakluke/hakrawler@latest
 go install github.com/jaeles-project/gospider@latest
@@ -168,8 +207,7 @@ go install github.com/dwisiswant0/cf-check@latest
 #paramspider
 git clone https://github.com/0xKayala/ParamSpider.git
 cd ParamSpider
-pip3 install -r requirements.txt
-pip3 install -r requirements.txt --break-system-packages
+pip3 install -r requirements.txt $bsp
 cd ../
 
 
@@ -181,7 +219,7 @@ curl -sSfL https://raw.githubusercontent.com/trufflesecurity/trufflehog/main/scr
 
 
 #updating some golang tools
-httpx -up
+~/go/bin/httpx -up
 nuclei -up
 katana -up
 
@@ -229,22 +267,23 @@ sleep 2
 #\\\\\\\\\ screen clear ///////#
 scrclr
 printf "${magenta}You need to add API Keys for [AMASS] [BBOT] [SUBDOMINATOR] in these config files${reset}\n"
-printf "${yellow}amass: $HOME/anveshan/.config/amass/config.yaml${reset}\n"
+printf "${yellow}amass: $HOME/anveshan/.config/amass/datasources.yaml${reset}\n"
 printf "${yellow}bbot: $HOME/.config/bbot/secrets.yml${reset}\n"
 printf "${yellow}subdominator: $HOME/.config/Subdominator/provider-config.yaml${reset}\n"
 echo
 printf "${magenta}Also add VIRUSTOTAL and URLSCAN API Keys in waymore config file to get more urls.${reset}\n"
 printf "${yellow}waymore: $HOME/anveshan/.config/waymore/config.yml${reset}\n"
 echo
-read -p "${red}You want to open these files in notepad? [y/n] ${reset} " apianswer
+read -p "${red}You want to open these files in notepad? [Y/n] ${reset} " apianswer
 if [[ "$apianswer" == [Yy] ]]; then
-        open $HOME/anveshan/.config/amass/config.yaml $HOME/.config/bbot/secrets.yml $HOME/.config/Subdominator/provider-config.yaml $HOME/anveshan/.config/waymore/config.yml
+        open $HOME/anveshan/.config/amass/datasources.yaml $HOME/.config/bbot/secrets.yml $HOME/.config/Subdominator/provider-config.yaml $HOME/anveshan/.config/waymore/config.yml
 else
         :
 fi
 
 echo
 printf "${red} script : setup.sh executed succesfully. ${reset}\n"
-printf "${yellow} check 'cd $HOME/anveshan' folder to understand tools and files tree.${reset}\n"
+printf "${yellow} check 'cd $HOME/anveshan' folder.${reset}\n"
+printf "${red} [&] Happy Hacking ;D${reset}\n"
 
 #iti
