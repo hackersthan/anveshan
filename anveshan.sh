@@ -44,10 +44,10 @@ choose_wordlist() {
 
     case $choice in
         1)
-            wordlist="~/anveshan/wordlists/dns.txt"
+            wordlist="$HOME/anveshan/wordlists/dns.txt"
             ;;
         2)
-            wordlist="~/anveshan/wordlists/dns2.txt"
+            wordlist="$HOME/anveshan/wordlists/dns2.txt"
             ;;
         *)
             printf "${red}Invalid choice. Exiting.${reset}\n"
@@ -125,7 +125,7 @@ echo
 
 #\\\\\\\\\\\\\ shrewdeye /////////////#
 printf "${magenta}[+] running shrewdeye${reset}\n" | pv -qL 23
-bash ~/anveshan/shrewdeye-bash/shrewdeye.sh -d $domain
+bash $HOME/anveshan/shrewdeye-bash/shrewdeye.sh -d $domain
 echo
 
 #\\\\\\\\\\\\\\ combine //////////////#
@@ -137,12 +137,12 @@ sed "s/\x1B\[[0-9;]*[mK]//g" *.txt | sed 's/\*\.//g' | anew psubdomains.txt
 #\\\\\\\\\\\\ screen clear ///////////#
 scrclr
 printf "${yellow}[+] dns bruteforce${reset}\n" | pv -qL 23
-puredns bruteforce "$wordlist" $domain -r ~/anveshan/wordlists/resolvers.txt -w bruteforce.txt
+puredns bruteforce "$wordlist" $domain -r $HOME/anveshan/wordlists/resolvers.txt -w bruteforce.txt
 echo 
 
 printf "${yellow}[+] resolving subdomains${reset}\n" | pv -qL 23
 cat psubdomains.txt bruteforce.txt | anew lets-resolve.txt
-puredns resolve lets-resolve.txt -r ~/anveshan/wordlists/resolvers.txt -w resolved.txt
+puredns resolve lets-resolve.txt -r $HOME/anveshan/wordlists/resolvers.txt -w resolved.txt
 cat resolved.txt | anew subdomains.txt
 echo "$domain" | anew subdomains.txt
 
@@ -171,7 +171,7 @@ sleep 2 && echo
 
 #\\\\\\\\\\\\\\\ httpx ///////////////#
 printf "${magenta}[*] getting webdomains using httpx ${reset}\n" | pv -qL 23
-httpx -l subdomains.txt -ss -pa -sc -fr -title -td -location -retries 3 -silent -nc -o httpx.txt
+$HOME/go/bin/httpx -l subdomains.txt -ss -pa -sc -fr -title -td -location -retries 3 -silent -nc -o httpx.txt
 cat httpx.txt | cut -d " " -f1 | anew webdomains.txt
 mv output/ screenshots/
 
@@ -208,7 +208,7 @@ printf "${magenta}[*] finding urls ${reset}\n" | pv -qL 23
 mkdir urls/ && cd urls/
 
 printf "${yellow} [+] waymore ${reset}\n" | pv -qL 23
-waymore -i $domain -mode U -c ~/anveshan/.config/waymore/config.yml -oU waymore.txt
+waymore -i $domain -mode U -c $HOME/anveshan/.config/waymore/config.yml -oU waymore.txt
 
 printf "${yellow} [+] getJS ${reset}\n" | pv -qL 23
 getJS --input ../webdomains.txt --output getjs.txt --nocolors --complete
@@ -217,7 +217,7 @@ printf "${yellow} [+] xnlinkfinder ${reset}\n" | pv -qL 23
 xnLinkFinder -i waymore.txt -d 3 -sf $domain -o xnUrls.txt -op xnParams.txt
 
 printf "${yellow} [+] finding parameters ${reset}\n" | pv -qL 23
-python3 ~/anveshan/tools/ParamSpider/paramspider.py --domain $domain --level high | uro | anew parameters.txt
+python3 $HOME/anveshan/tools/ParamSpider/paramspider.py --domain $domain --level high | uro | anew parameters.txt
 
 printf "${yellow} [+] Katan for js files ${reset}\n" | pv -qL 23
 katana -list ../webdomains.txt -jc -em js,json,jsp,jsx,ts,tsx,mjs -d 3 -nc -o katana.txt
@@ -241,16 +241,16 @@ mv katana.txt urls-source/
 scrclr
 
 printf "${magenta}[*] extracting js files and finding secrets ${reset}\n" | pv -qL 23
-cat urls.txt | grep -Ei "(?i).+\.js(?:on|p|x)?$" | httpx -mc 200 | anew jsurls.txt
+cat urls.txt | grep -Ei "(?i).+\.js(?:on|p|x)?$" | $HOME/go/bin/httpx -mc 200 | anew jsurls.txt
 
 #\\\\\\\\getting live js files////////#
-httpx -l jsurls.txt -sr -sc -mc 200 -ct -nc | grep -v "text/html" | cut -d " " -f1 | anew jsfiles.txt
+$HOME/go/bin/httpx -l jsurls.txt -sr -sc -mc 200 -ct -nc | grep -v "text/html" | cut -d " " -f1 | anew jsfiles.txt
 mv output/ js-source/
 
 #\\\\\\\nuclei on live js files///////#
 scrclr
 printf "${magenta}[*] finding secrets inside $(cat jsfiles.txt | wc -l) js files${reset}\n" | pv -qL 23
-cat jsfiles.txt | nuclei -t ~/nuclei-templates/http/exposures/tokens/ | tee -a js_nuclei.txt
+cat jsfiles.txt | nuclei -t $HOME/nuclei-templates/http/exposures/tokens/ | tee -a js_nuclei.txt
 mv js_nuclei.txt ../
 
 
