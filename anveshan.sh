@@ -241,7 +241,7 @@ mv katana.txt urls-source/
 scrclr
 
 printf "${magenta}[*] extracting js files and finding secrets ${reset}\n" | pv -qL 23
-cat urls.txt | grep -Ei "(?i).+\.js(?:on|p|x)?$" | $HOME/go/bin/httpx -mc 200 | anew jsurls.txt
+cat urls.txt | grep -Ei ".+\.js(?:on|p|x)?$" | $HOME/go/bin/httpx -mc 200 | anew jsurls.txt
 
 #\\\\\\\\getting live js files////////#
 $HOME/go/bin/httpx -l jsurls.txt -sr -sc -mc 200 -ct -nc | grep -v "text/html" | cut -d " " -f1 | anew jsfiles.txt
