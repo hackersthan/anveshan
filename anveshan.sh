@@ -211,7 +211,7 @@ printf "${yellow} [+] waymore ${reset}\n" | pv -qL 23
 waymore -i $domain -mode U -c $HOME/anveshan/.config/waymore/config.yml -oU waymore.txt
 
 printf "${yellow} [+] getJS ${reset}\n" | pv -qL 23
-getJS --input ../webdomains.txt --output getjs.txt --nocolors --complete
+getJS --input ../webdomains.txt --output getjs.txt --complete
 
 printf "${yellow} [+] xnlinkfinder ${reset}\n" | pv -qL 23
 xnLinkFinder -i waymore.txt -d 3 -sf $domain -o xnUrls.txt -op xnParams.txt
@@ -223,7 +223,7 @@ printf "${yellow} [+] Katan for js files ${reset}\n" | pv -qL 23
 katana -list ../webdomains.txt -jc -em js,json,jsp,jsx,ts,tsx,mjs -d 3 -nc -o katana.txt
 
 # combine
-cat waymore.txt getjs.txt xnUrls.txt parameters.txt katana.txt | anew urls.txt
+sed "s/\x1B\[[0-9;]*[mK]//g" waymore.txt getjs.txt xnUrls.txt parameters.txt katana.txt | anew urls.txt
 mkdir urls-source/
 mv waymore.txt urls-source/
 mv getjs.txt urls-source/
