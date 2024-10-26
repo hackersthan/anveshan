@@ -53,8 +53,7 @@ if ! command -v go &> /dev/null; then
 fi
 
 
-#add GOPATH
-# Added Check for GOROOT too
+#check GOPATH abd GOROOT
 if [ -f ~/.bashrc ]; then
     if ! grep -q "export GOPATH=" ~/.bashrc && ! grep -q "export GOROOT=" ~/.bashrc; then
         echo "export GOROOT=/usr/local/go" >> ~/.bashrc
@@ -72,7 +71,6 @@ elif [ -f ~/.zshrc ]; then
 else
     echo "~/.bashrc or ~/.zshrc not found"
 fi
-
 
 
 
