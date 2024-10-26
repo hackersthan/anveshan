@@ -73,6 +73,24 @@ else
 fi
 
 
+# creating anveshan directory
+if [[ -d $HOME/anveshan ]]
+then
+        cd "$HOME/anveshan"
+else
+        mkdir "$HOME/anveshan" && cd "$HOME/anveshan"
+fi
+
+
+# Creating a virtual python environment
+sudo apt install -y python3 python3-pip python3-venv || { echo "Failed to install python3-venv. Exiting."; exit 1; }
+VENV_PATH="$HOME/anveshan/venv"
+python3 -m venv "$VENV_PATH"
+source "$VENV_PATH/bin/activate"
+
+echo "[+] Upgrading pip in the virtual environment..."
+pip3 install --upgrade pip
+
 
 # Check if --break-system-packages is required or not
 if pip3 install --help | grep -q -- '--break-system-packages'; then
@@ -123,13 +141,6 @@ sudo apt -y install software-properties-common nmap npm parallel ruby-full renam
 sudo apt -y install libpcap-dev libcurl4-openssl-dev libxml2 libxml2-dev libxslt1-dev ruby-dev libgmp-dev zlib1g-dev libssl-dev libffi-dev libldns-dev
 sudo apt -y install jq git chromium-bsu
 
-# creating anveshan directory
-if [[ -d $HOME/anveshan ]]
-then
-        cd "$HOME/anveshan"
-else
-        mkdir "$HOME/anveshan" && cd "$HOME/anveshan"
-fi
 
 #\\\\\\ installing tools //////#
 scrclr
@@ -137,14 +148,11 @@ printf "${magenta}[*] Installing tools ${reset}\n" | pv -qL 23
 sleep 2
 
 #basics
-pip3 install uro $bsp
-pip3 install pipx $bsp
-pip3 install urless $bsp
+pip3 install uro pipx urless $bsp
 go install -v github.com/tomnomnom/anew@latest
 
 #subdomains
-pip3 install bbot $bsp
-pip3 install git+https://github.com/guelfoweb/knock.git $bsp
+pip3 install bbot git+https://github.com/guelfoweb/knock.git $bsp
 go install github.com/tomnomnom/assetfinder@latest
 go install -v github.com/owasp-amass/amass/v4/...@master
 
@@ -157,13 +165,11 @@ sudo mv findomain /usr/bin/findomain
 #subdomainator
 pipx install git+https://github.com/RevoltSecurities/Subdominator
 
-
 #shrewdeye
 git clone https://github.com/tess-ss/shrewdeye-bash.git
 cd shrewdeye-bash
 chmod +x shrewdeye.sh
 cd ../
-
 
 #dnsvalidator
 git clone https://github.com/vortexau/dnsvalidator.git
@@ -176,7 +182,6 @@ cd ../
 go install github.com/d3mondev/puredns/v2@latest
 #cf-check
 go install github.com/dwisiswant0/cf-check@latest
-
 
 #massdns
 git clone https://github.com/blechschmidt/massdns.git
@@ -284,5 +289,8 @@ echo
 printf "${red} script : setup.sh executed succesfully. ${reset}\n"
 printf "${yellow} check 'cd $HOME/anveshan' folder.${reset}\n"
 printf "${red} [&] Happy Hacking ;D${reset}\n"
+
+#deactivating the python virtual envirnment
+deactivate
 
 #iti
