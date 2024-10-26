@@ -53,15 +53,17 @@ if ! command -v go &> /dev/null; then
 fi
 
 
-#add GOPATH
+#check GOPATH abd GOROOT
 if [ -f ~/.bashrc ]; then
-    if ! grep -q "export GOPATH=" ~/.bashrc; then
+    if ! grep -q "export GOPATH=" ~/.bashrc && ! grep -q "export GOROOT=" ~/.bashrc; then
+        echo "export GOROOT=/usr/local/go" >> ~/.bashrc
         echo "export GOPATH=\$HOME/go" >> ~/.bashrc
         echo "export PATH=\$PATH:\$GOROOT/bin:\$GOPATH/bin" >> ~/.bashrc
     fi
     source ~/.bashrc
 elif [ -f ~/.zshrc ]; then
-    if ! grep -q "export GOPATH=" ~/.zshrc; then
+    if ! grep -q "export GOPATH=" ~/.zshrc && ! grep -q "export GOROOT=" ~/.zshrc; then
+        echo "export GOROOT=/usr/local/go" >> ~/.zshrc
         echo "export GOPATH=\$HOME/go" >> ~/.zshrc
         echo "export PATH=\$PATH:\$GOROOT/bin:\$GOPATH/bin" >> ~/.zshrc
     fi
