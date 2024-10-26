@@ -153,11 +153,8 @@ chmod +x findomain
 sudo mv findomain /usr/bin/findomain
 
 #subdomainator
-git clone https://github.com/RevoltSecurities/Subdominator.git
-cd Subdominator
-pip3 install -r requirements.txt $bsp
-python3 setup.py install
-cd ../
+pipx install git+https://github.com/RevoltSecurities/Subdominator
+
 
 #shrewdeye
 git clone https://github.com/tess-ss/shrewdeye-bash.git
