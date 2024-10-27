@@ -191,9 +191,14 @@ sudo make install
 cd ../
 
 #chrome
-sudo apt-get install libxss1 libappindicator1 libindicator7 -y
-wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-sudo apt install ./google-chrome*.deb -y
+if ! command -v google-chrome &> /dev/null; then
+    echo "Google Chrome is not installed. Installing now..."
+    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+    sudo apt install ./google-chrome-stable_current_amd64.deb -y
+    rm google-chrome-stable_current_amd64.deb
+else
+    echo "Chrome is already installed."
+fi
 
 
 #urls
