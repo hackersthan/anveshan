@@ -285,18 +285,17 @@ printf "${yellow}waymore: $HOME/anveshan/.config/waymore/config.yml${reset}\n"
 echo
 read -p "${red}You want to open these files in notepad? [Y/n] ${reset} " apianswer
 if [[ "$apianswer" == [Yy] ]]; then
-        if command -v notepad &> /dev/null; then
+    if command -v notepad &> /dev/null; then
         editor="notepad"
-    elif command -v nano &> /dev/null; then
-        editor="nano"
-    elif command -v vim &> /dev/null; then
-        editor="vim"
     elif command -v gedit &> /dev/null; then
         editor="gedit"
+    elif command -v nano &> /dev/null; then
+        editor="nano"
     else
-        printf "${red}No  text editor found. Please use notepad, nano, vim, or gedit.${reset}\n"
+        printf "${red}No text editor found. Please open these API config files manually.${reset}\n"
         exit 1
     fi
+    
     $editor "$HOME/anveshan/.config/amass/datasources.yaml" \
             "$HOME/.config/bbot/secrets.yml" \
             "$HOME/.config/Subdominator/provider-config.yaml" \
@@ -304,6 +303,7 @@ if [[ "$apianswer" == [Yy] ]]; then
 else
     :
 fi
+
 
 echo
 printf "${red} script : setup.sh executed succesfully. ${reset}\n"
