@@ -280,9 +280,24 @@ printf "${yellow}waymore: $HOME/anveshan/.config/waymore/config.yml${reset}\n"
 echo
 read -p "${red}You want to open these files in notepad? [Y/n] ${reset} " apianswer
 if [[ "$apianswer" == [Yy] ]]; then
-        open $HOME/anveshan/.config/amass/datasources.yaml $HOME/.config/bbot/secrets.yml $HOME/.config/Subdominator/provider-config.yaml $HOME/anveshan/.config/waymore/config.yml
+        if command -v notepad &> /dev/null; then
+        editor="notepad"
+    elif command -v nano &> /dev/null; then
+        editor="nano"
+    elif command -v vim &> /dev/null; then
+        editor="vim"
+    elif command -v gedit &> /dev/null; then
+        editor="gedit"
+    else
+        printf "${red}No  text editor found. Please use notepad, nano, vim, or gedit.${reset}\n"
+        exit 1
+    fi
+    $editor "$HOME/anveshan/.config/amass/datasources.yaml" \
+            "$HOME/.config/bbot/secrets.yml" \
+            "$HOME/.config/Subdominator/provider-config.yaml" \
+            "$HOME/anveshan/.config/waymore/config.yml"
 else
-        :
+    :
 fi
 
 echo
