@@ -146,49 +146,91 @@ sudo apt -y install jq git chromium-bsu
 scrclr
 printf "${magenta}[*] Installing tools ${reset}\n" | pv -qL 23
 sleep 2
+install_by_check() {
+    local cmd="$1"
+    local install_command="$2"
+    if ! command -v "$cmd" &>/dev/null; then
+        echo "Installing $cmd..."
+        eval "$install_command"
+    else
+        echo "$cmd is already installed at $(command -v "$cmd")"
+    fi
+}
 
-#basics
-pip3 install uro pipx urless $bsp
-go install -v github.com/tomnomnom/anew@latest
+# Basics
+echo "Checking and installing basic tools..."
+install_by_check "uro" "pip3 install uro"
+install_by_check "pipx" "pip3 install pipx"
+install_by_check "urless" "pip3 install urless"
+install_by_check "anew" "go install -v github.com/tomnomnom/anew@latest"
 
-#subdomains
-pip3 install bbot git+https://github.com/guelfoweb/knock.git $bsp
-go install github.com/tomnomnom/assetfinder@latest
-go install -v github.com/owasp-amass/amass/v4/...@master
+# Subdomains
+echo "Checking and installing subdomain tools..."
+install_by_check "bbot" "pip3 install bbot"
+install_by_check "knock" "pip3 install git+https://github.com/guelfoweb/knock.git"
+install_by_check "assetfinder" "go install github.com/tomnomnom/assetfinder@latest"
+install_by_check "amass" "go install -v github.com/owasp-amass/amass/v4/...@master"
 
-#findomain
-curl -LO https://github.com/findomain/findomain/releases/latest/download/findomain-linux.zip
-unzip findomain-linux.zip
-chmod +x findomain
-sudo mv findomain /usr/bin/findomain
+# Findomain
+echo "Checking and installing findomain..."
+if ! command -v findomain &>/dev/null; then
+    echo "Installing findomain..."
+    curl -LO https://github.com/findomain/findomain/releases/latest/download/findomain-linux.zip
+    unzip findomain-linux.zip
+    chmod +x findomain
+    sudo mv findomain /usr/bin/findomain
+    rm findomain-linux.zip
+else
+    echo "findomain is already installed at $(command -v findomain)"
+fi
 
-#subdomainator
-pipx install git+https://github.com/RevoltSecurities/Subdominator
+# Subdominator
+echo "Checking and installing Subdominator..."
+if ! pipx list | grep -q "subdominator"; then
+    echo "Installing Subdominator..."
+    pipx install git+https://github.com/RevoltSecurities/Subdominator
+else
+    echo "Subdominator is already installed."
+fi
 
-#shrewdeye
-git clone https://github.com/tess-ss/shrewdeye-bash.git
-cd shrewdeye-bash
-chmod +x shrewdeye.sh
-cd ../
+# ShrewdEye
+echo "Checking and installing ShrewdEye..."
+if [ ! -d "shrewdeye-bash" ]; then
+    git clone https://github.com/tess-ss/shrewdeye-bash.git
+    cd shrewdeye-bash
+    chmod +x shrewdeye.sh
+    cd ..
+else
+    echo "ShrewdEye is already installed."
+fi
 
-#dnsvalidator
-git clone https://github.com/vortexau/dnsvalidator.git
-cd dnsvalidator
-pip3 install -r requirements.txt $bsp
-python3 setup.py install
-cd ../
+# DNS Validator
+echo "Checking and installing DNSValidator..."
+if [ ! -d "dnsvalidator" ]; then
+    git clone https://github.com/vortexau/dnsvalidator.git
+    cd dnsvalidator
+    pip3 install -r requirements.txt
+    python3 setup.py install
+    cd ..
+else
+    echo "DNSValidator is already installed."
+fi
 
-#puredns
-go install github.com/d3mondev/puredns/v2@latest
-#cf-check
-go install github.com/dwisiswant0/cf-check@latest
-
-#massdns
-git clone https://github.com/blechschmidt/massdns.git
-cd massdns
-sudo make
-sudo make install
-cd ../
+# PureDNS
+install_by_check "puredns" "go install github.com/d3mondev/puredns/v2@latest"
+# CF-Check
+install_by_check "cf-check" "go install github.com/dwisiswant0/cf-check@latest"
+# MassDNS
+echo "Checking and installing MassDNS..."
+if [ ! -d "massdns" ]; then
+    git clone https://github.com/blechschmidt/massdns.git
+    cd massdns
+    sudo make
+    sudo make install
+    cd ..
+else
+    echo "MassDNS is already installed."
+fi
 
 #chrome
 if ! command -v google-chrome &> /dev/null; then
@@ -202,77 +244,108 @@ fi
 
 
 #urls
-pip3 install waymore $bsp
-pip3 install xnLinkFinder $bsp
-go install github.com/003random/getJS/v2@latest
-go install github.com/hakluke/hakrawler@latest
-go install github.com/jaeles-project/gospider@latest
-go install github.com/projectdiscovery/katana/cmd/katana@latest
-go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest
-go install -v github.com/projectdiscovery/naabu/v2/cmd/naabu@latest
-go install github.com/dwisiswant0/cf-check@latest
+echo "Checking and installing additional tools..."
+install_by_check "waymore" "pip3 install waymore"
+install_by_check "xnLinkFinder" "pip3 install xnLinkFinder"
+install_by_check "getJS" "go install github.com/003random/getJS/v2@latest"
+install_by_check "hakrawler" "go install github.com/hakluke/hakrawler@latest"
+install_by_check "gospider" "go install github.com/jaeles-project/gospider@latest"
+install_by_check "katana" "go install github.com/projectdiscovery/katana/cmd/katana@latest"
+install_by_check "httpx" "go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest"
+install_by_check "naabu" "go install -v github.com/projectdiscovery/naabu/v2/cmd/naabu@latest"
+install_by_check "cf-check" "go install github.com/dwisiswant0/cf-check@latest"
 
+# ParamSpider
+echo "Checking and installing ParamSpider..."
+if [ ! -d "ParamSpider" ]; then
+    git clone https://github.com/0xKayala/ParamSpider.git
+    cd ParamSpider
+    pip3 install -r requirements.txt
+    cd ..
+else
+    echo "ParamSpider is already installed."
+fi
 
-#paramspider
-git clone https://github.com/0xKayala/ParamSpider.git
-cd ParamSpider
-pip3 install -r requirements.txt $bsp
-cd ../
-
-
-#nuclei
-go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
+# Nuclei
+install_by_check "nuclei" "go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest"
 nuclei -ut
-#trufflehog
-curl -sSfL https://raw.githubusercontent.com/trufflesecurity/trufflehog/main/scripts/install.sh | sudo sh -s -- -b /usr/local/bin
+# TruffleHog
+echo "Checking and installing TruffleHog..."
+if ! command -v trufflehog &>/dev/null; then
+    echo "Installing TruffleHog..."
+    curl -sSfL https://raw.githubusercontent.com/trufflesecurity/trufflehog/main/scripts/install.sh | sudo sh -s -- -b /usr/local/bin
+else
+    echo "TruffleHog is already installed at $(command -v trufflehog)"
+fi
 
-
-#updating some golang tools
+# Updating Go tools
+echo "Updating Go tools..."
 ~/go/bin/httpx -up
 nuclei -up
 katana -up
 
-
 #\\\\\\\\\\ wordlists /////////#
 scrclr
 mkdir "wordlists" && cd "wordlists"
+# Function to download a wordlist if it doesn’t exist
+downoad_bycheck() {
+    local file_name=$1
+    local url=$2
 
-printf "${magenta}[*] downloading important wordlists ${reset}\n" | pv -qL 23
-wget -O trickest-resolvers.txt https://raw.githubusercontent.com/trickest/resolvers/refs/heads/main/resolvers.txt
-wget -O six2dez.txt https://gist.githubusercontent.com/six2dez/a307a04a222fab5a57466c51e1569acf/raw
-wget -O n0kovo-huge-subdomains.txt https://raw.githubusercontent.com/n0kovo/n0kovo_subdomains/refs/heads/main/n0kovo_subdomains_huge.txt
-wget -O dnscan-top10k.txt https://raw.githubusercontent.com/rbsec/dnscan/refs/heads/master/subdomains-10000.txt
-wget -O best-dns-wordlist.txt https://wordlists-cdn.assetnote.io/data/manual/best-dns-wordlist.txt
-wget -O assetfinder-httparchive-subdomains.txt https://wordlists-cdn.assetnote.io/data/automated/httparchive_subdomains_2024_05_28.txt
+    if [[ -f "$file_name" ]]; then
+        echo "$file_name already exists at $(realpath "$file_name")"
+    else
+        echo "Downloading $file_name..."
+        wget -O "$file_name" "$url"
+    fi
+}
 
-#\\\\\ creating dns files /////#
-cat best-dns-wordlist.txt six2dez.txt dnscan-top10k.txt | anew dns.txt
-cat six2dez.txt dnscan-top10k.txt | anew dns2.txt
+# Display message
+printf "${magenta}[*] Checking and downloading important wordlists if not found${reset}\n" | pv -qL 23
+# Wordlist URLs
+downoad_bycheck "trickest-resolvers.txt" "https://raw.githubusercontent.com/trickest/resolvers/refs/heads/main/resolvers.txt"
+downoad_bycheck "six2dez.txt" "https://gist.githubusercontent.com/six2dez/a307a04a222fab5a57466c51e1569acf/raw"
+downoad_bycheck "n0kovo-huge-subdomains.txt" "https://raw.githubusercontent.com/n0kovo/n0kovo_subdomains/refs/heads/main/n0kovo_subdomains_huge.txt"
+downoad_bycheck "dnscan-top10k.txt" "https://raw.githubusercontent.com/rbsec/dnscan/refs/heads/master/subdomains-10000.txt"
+downoad_bycheck "best-dns-wordlist.txt" "https://wordlists-cdn.assetnote.io/data/manual/best-dns-wordlist.txt"
+downoad_bycheck "assetfinder-httparchive-subdomains.txt" "https://wordlists-cdn.assetnote.io/data/automated/httparchive_subdomains_2024_05_28.txt"
 
-echo "dns.txt contains best-dns-wordlist.txt, six2dez.txt and dnscan-top10k.txt in it." >> readme
-echo "dns2.txt contains six2dez.txt and dnscan-top10k.txt in it." >> readme
-rm best-dns-wordlist.txt
-rm six2dez.txt
-rm dnscan-top10k.txt
+# create if  DNS files if  don’t exist
+echo "Creating  DNS files..."
+if [[ ! -f dns.txt ]]; then
+    cat best-dns-wordlist.txt six2dez.txt dnscan-top10k.txt | anew dns.txt
+    echo "dns.txt contains best-dns-wordlist.txt, six2dez.txt, and dnscan-top10k.txt in it." >> readme
+fi
 
-#\\ downloading amass config //#
-mkdir -p $HOME/anveshan/.config/amass
-mkdir -p $HOME/anveshan/.config/waymore
-wget -O $HOME/anveshan/.config/amass/datasources.yaml https://raw.githubusercontent.com/owasp-amass/amass/refs/heads/master/examples/datasources.yaml
-wget -O $HOME/anveshan/.config/amass/config.yaml https://raw.githubusercontent.com/owasp-amass/amass/refs/heads/master/examples/config.yaml
-wget -O $HOME/anveshan/.config/waymore/config.yml https://raw.githubusercontent.com/xnl-h4ck3r/waymore/refs/heads/main/config.yml
+if [[ ! -f dns2.txt ]]; then
+    cat six2dez.txt dnscan-top10k.txt | anew dns2.txt
+    echo "dns2.txt contains six2dez.txt and dnscan-top10k.txt in it." >> readme
+fi
 
+rm -f best-dns-wordlist.txt six2dez.txt dnscan-top10k.txt
 
-#\\\\\\ getting resolvers /////#
+# Amass and Waymore config files
+echo "Downloading Amass and Waymore config files if not present..."
+mkdir -p "$HOME/anveshan/.config/amass"
+mkdir -p "$HOME/anveshan/.config/waymore"
+
+downoad_bycheck "$HOME/anveshan/.config/amass/datasources.yaml" "https://raw.githubusercontent.com/owasp-amass/amass/refs/heads/master/examples/datasources.yaml"
+downoad_bycheck "$HOME/anveshan/.config/amass/config.yaml" "https://raw.githubusercontent.com/owasp-amass/amass/refs/heads/master/examples/config.yaml"
+downoad_bycheck "$HOME/anveshan/.config/waymore/config.yml" "https://raw.githubusercontent.com/xnl-h4ck3r/waymore/refs/heads/main/config.yml"
+
+# Fresh resolvers
 scrclr
-printf "${magenta}[*] getting fresh resolvers in 120 seconds ${reset}\n" | pv -qL 23
-timeout 120 dnsvalidator -tL trickest-resolvers.txt -threads 25 -o resolvers.txt
-printf "${yellow}[$] we got $(cat resolvers.txt | wc -l) fresh resolvers${reset}\n" | pv -qL 23
+printf "${magenta}[*] Getting fresh resolvers for 120 seconds if not already fetched${reset}\n" | pv -qL 23
+
+if [[ ! -f resolvers.txt ]]; then
+    timeout 120 dnsvalidator -tL trickest-resolvers.txt -threads 25 -o resolvers.txt
+    printf "${yellow}[$] Got $(wc -l < resolvers.txt) fresh resolvers${reset}\n" | pv -qL 23
+else
+    echo "Resolvers file already exists at $(realpath resolvers.txt)"
+fi
+
 cd ../
 sleep 2
-
-
-
 #\\\\\\\\\ screen clear ///////#
 scrclr
 printf "${magenta}You need to add API Keys for [AMASS] [BBOT] [SUBDOMINATOR] in these config files${reset}\n"
