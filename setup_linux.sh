@@ -157,10 +157,14 @@ go install github.com/tomnomnom/assetfinder@latest
 go install -v github.com/owasp-amass/amass/v4/...@master
 
 #findomain
-curl -LO https://github.com/findomain/findomain/releases/latest/download/findomain-linux.zip
-unzip findomain-linux.zip
-chmod +x findomain
-sudo mv findomain /usr/bin/findomain
+if ! command -v findomain &> /dev/null; then
+    curl -LO https://github.com/findomain/findomain/releases/latest/download/findomain-linux.zip
+    unzip findomain-linux.zip
+    chmod +x findomain
+    sudo mv findomain /usr/bin/findomain
+else
+    echo "findomain is already installed."
+fi
 
 #subdomainator
 pipx install git+https://github.com/RevoltSecurities/Subdominator
@@ -172,11 +176,16 @@ chmod +x shrewdeye.sh
 cd ../
 
 #dnsvalidator
-git clone https://github.com/vortexau/dnsvalidator.git
-cd dnsvalidator
-pip3 install -r requirements.txt $bsp
-python3 setup.py install
-cd ../
+if ! command -v dnsvalidator &> /dev/null; then
+    git clone https://github.com/vortexau/dnsvalidator.git
+    cd dnsvalidator
+    pip3 install -r requirements.txt $bsp
+    python3 setup.py install
+    cd ../
+else
+    echo "dnsvalidator is already installed."
+fi
+
 
 #puredns
 go install github.com/d3mondev/puredns/v2@latest
@@ -184,16 +193,26 @@ go install github.com/d3mondev/puredns/v2@latest
 go install github.com/dwisiswant0/cf-check@latest
 
 #massdns
-git clone https://github.com/blechschmidt/massdns.git
-cd massdns
-sudo make
-sudo make install
-cd ../
+if ! command -v massdns &> /dev/null; then
+    git clone https://github.com/blechschmidt/massdns.git
+    cd massdns
+    sudo make
+    sudo make install
+    cd ../
+else
+    echo "massdns is already installed."
+fi
+
 
 #chrome
-sudo apt-get install libxss1 libappindicator1 libindicator7 -y
-wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-sudo apt install ./google-chrome*.deb -y
+if ! command -v google-chrome &> /dev/null; then
+    echo "Google Chrome is not installed. Installing now..."
+    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+    sudo apt install ./google-chrome-stable_current_amd64.deb -y
+    rm google-chrome-stable_current_amd64.deb
+else
+    echo "Chrome is already installed."
+fi
 
 
 #urls
@@ -280,10 +299,25 @@ printf "${yellow}waymore: $HOME/anveshan/.config/waymore/config.yml${reset}\n"
 echo
 read -p "${red}You want to open these files in notepad? [Y/n] ${reset} " apianswer
 if [[ "$apianswer" == [Yy] ]]; then
-        open $HOME/anveshan/.config/amass/datasources.yaml $HOME/.config/bbot/secrets.yml $HOME/.config/Subdominator/provider-config.yaml $HOME/anveshan/.config/waymore/config.yml
+    if command -v notepad &> /dev/null; then
+        editor="notepad"
+    elif command -v gedit &> /dev/null; then
+        editor="gedit"
+    elif command -v nano &> /dev/null; then
+        editor="nano"
+    else
+        printf "${red}No text editor found. Please open these API config files manually.${reset}\n"
+        exit 1
+    fi
+    
+    $editor "$HOME/anveshan/.config/amass/datasources.yaml" \
+            "$HOME/.config/bbot/secrets.yml" \
+            "$HOME/.config/Subdominator/provider-config.yaml" \
+            "$HOME/anveshan/.config/waymore/config.yml"
 else
-        :
+    :
 fi
+
 
 echo
 printf "${red} script : setup.sh executed succesfully. ${reset}\n"
