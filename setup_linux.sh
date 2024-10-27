@@ -157,10 +157,14 @@ go install github.com/tomnomnom/assetfinder@latest
 go install -v github.com/owasp-amass/amass/v4/...@master
 
 #findomain
-curl -LO https://github.com/findomain/findomain/releases/latest/download/findomain-linux.zip
-unzip findomain-linux.zip
-chmod +x findomain
-sudo mv findomain /usr/bin/findomain
+if ! command -v findomain &> /dev/null; then
+    curl -LO https://github.com/findomain/findomain/releases/latest/download/findomain-linux.zip
+    unzip findomain-linux.zip
+    chmod +x findomain
+    sudo mv findomain /usr/bin/findomain
+else
+    echo "findomain is already installed."
+fi
 
 #subdomainator
 pipx install git+https://github.com/RevoltSecurities/Subdominator
@@ -172,11 +176,16 @@ chmod +x shrewdeye.sh
 cd ../
 
 #dnsvalidator
-git clone https://github.com/vortexau/dnsvalidator.git
-cd dnsvalidator
-pip3 install -r requirements.txt $bsp
-python3 setup.py install
-cd ../
+if ! command -v dnsvalidator &> /dev/null; then
+    git clone https://github.com/vortexau/dnsvalidator.git
+    cd dnsvalidator
+    pip3 install -r requirements.txt $bsp
+    python3 setup.py install
+    cd ../
+else
+    echo "dnsvalidator is already installed."
+fi
+
 
 #puredns
 go install github.com/d3mondev/puredns/v2@latest
@@ -184,11 +193,16 @@ go install github.com/d3mondev/puredns/v2@latest
 go install github.com/dwisiswant0/cf-check@latest
 
 #massdns
-git clone https://github.com/blechschmidt/massdns.git
-cd massdns
-sudo make
-sudo make install
-cd ../
+if ! command -v massdns &> /dev/null; then
+    git clone https://github.com/blechschmidt/massdns.git
+    cd massdns
+    sudo make
+    sudo make install
+    cd ../
+else
+    echo "massdns is already installed."
+fi
+
 
 #chrome
 if ! command -v google-chrome &> /dev/null; then
