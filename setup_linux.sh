@@ -30,7 +30,7 @@ echo -e "${green}    ███████████${red}╫       ╫${green
 echo -e "${green}    ╫██████████${red}▒      ,▓${green}█████████▌       ${reset}"
 echo -e "${green}     ▀████████ ${red}╬█▄▄╔╔φ${green}████████████       ${reset}"
 echo -e "${green}       ▀█████${red}╬█${green}████████████████████      ${reset}"
-echo -e "${green}           ${red}╙▀${green}▀▀▀▀▀▀\`\@hackersthan/█▀  ${red}${current_version}   ${reset}"
+echo -e "${green}           ${red}╙▀${green}▀▀▀▀▀▀\`\@hackersthan/█▀  ${red}setup : ${current_version}   ${reset}"
 }
 
 # screen clear
