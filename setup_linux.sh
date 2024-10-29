@@ -1,11 +1,12 @@
 #!/bin/bash
 # shree_hari
 # Usecase : setup your device to run anveshan without any errors.
-# Usage: Run `bash setup_linux.sh`.
+# Usage: Run `bash setup_linux.sh`. [if you have bash shell]
+# Usage: Run `zsh setup_linux.sh`. [if you have zsh shell]
 # Logs: Logs actions and errors to setup_log.txt
 
 # Current version
-current_version="v1.1.0"
+current_version="v1.2.0"
 
 # colors
 blue=$'\e[34m'
@@ -44,7 +45,7 @@ check_for_updates() {
     echo -e "${yellow}Checking for updates...${reset}"
 
     local latest_file_version
-    latest_file_version=$(curl -s https://raw.githubusercontent.com/hackersthan/anveshan/main/setup_linux.sh | grep 'current_version' | cut -d '=' -f2 | tr -d ' "')
+    latest_file_version=$(curl -s https://raw.githubusercontent.com/hackersthan/anveshan/main/setup_linux.sh | grep 'current_version\=' | cut -d '=' -f2 | tr -d ' "')
 
     # Compare versions
     if [ "$latest_file_version" != "$current_version" ]; then
@@ -95,8 +96,6 @@ if ! command -v go &>/dev/null; then
     printf "${red}[!] GO language is not installed. Installing via apt.${reset}\n"
     sudo add-apt-repository ppa:longsleep/golang-backports
     sudo apt install golang-go
-else
-    echo "[*] golang is already installed."
 fi
 
 #check GOPATH abd GOROOT
@@ -127,7 +126,7 @@ fi
 
 # Creating a virtual python environment
 sudo apt install -y python3 python3-pip python3-venv || {
-    echo "Failed to install python3-venv. Exiting."
+    echo -e "${red} Failed to install python3-venv. Exiting${reset}"
     exit 1
 }
 VENV_PATH="$HOME/anveshan/venv"
